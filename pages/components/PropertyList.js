@@ -18,24 +18,13 @@ const sortOptions = [
 
 const PropertyList = ({ filters }) => {
   const [sortOption, setSortOption] = useState("Newest First");
-  const [location, setLocation] = useState(null);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setLocation(window.location); // Safe to access window.location
-    }
-  }, []);
 
   // Function to filter and sort properties based on the selected options and filters
   const filteredProperties = () => {
     let filtered = [...properties];
 
-    // Apply filters if they exist (e.g., price range, location, etc.)
-    if (filters.location) {
-      filtered = filtered.filter(property =>
-        property.location.toLowerCase().includes(filters.location.toLowerCase())
-      );
-    }
+ 
 
     if (filters.minPrice && filters.maxPrice) {
       filtered = filtered.filter(property => {
