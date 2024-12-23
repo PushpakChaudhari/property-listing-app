@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropertyCard from "./PropertyCard";
 import properties from "../../data/properties";
 
@@ -18,6 +18,13 @@ const sortOptions = [
 
 const PropertyList = ({ filters }) => {
   const [sortOption, setSortOption] = useState("Newest First");
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setLocation(window.location); // Safe to access window.location
+    }
+  }, []);
 
   // Function to filter and sort properties based on the selected options and filters
   const filteredProperties = () => {
