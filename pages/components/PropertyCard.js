@@ -15,7 +15,7 @@ const PropertyCard = ({ price, title, type, features = [], agent, image, tags })
   };
 
   return (
-    <div className="flex flex-col lg:flex-row bg-white shadow-md rounded-lg p-4 border border-gray-200 overflow-hidden relative lg:h-[231px]">
+    <div className="flex flex-col lg:flex-row bg-white shadow-md rounded-lg p-4 border border-gray-200 overflow-hidden relative lg:h-[231px] ">
       {/* Image Section */}
       <div className="relative w-full lg:w-1/3 mb-4 lg:mb-0">
         <img
@@ -32,7 +32,7 @@ const PropertyCard = ({ price, title, type, features = [], agent, image, tags })
       </div>
 
       {/* Content Section */}
-      <div className="flex flex-col flex-1 lg:w-2/3 lg:ml-4">
+      <div className="flex flex-col flex-1 lg:w-2/3 lg:ml-4 ">
         <h3 className="text-lg font-bold text-gray-900">{price}</h3>
         <p className="text-sm text-gray-600">{title}</p>
 
@@ -40,7 +40,7 @@ const PropertyCard = ({ price, title, type, features = [], agent, image, tags })
         <div className="mt-4 relative">
           <button
             onClick={() => scrollFeatures("left")}
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white rounded-full p-2 shadow-md hover:bg-blue-600"
+            className="absolute left-2 top-1/2 transform -translate-y-1/2  text-black rounded-full p-2 shadow-md hover:bg-blue-600"
           >
             {"<"}
           </button>
@@ -57,7 +57,7 @@ const PropertyCard = ({ price, title, type, features = [], agent, image, tags })
               {features.map((feature, index) => (
                 <li
                   key={index}
-                  className="flex-shrink-0 bg-gray-100 border border-gray-200 px-4 py-2 rounded-lg shadow-sm text-center min-w-[120px]"
+                  className="flex-shrink-0 bg-blue-50 border  px-4 py-2 rounded-lg shadow-sm text-center min-w-[120px]"
                 >
                   {feature}
                 </li>
@@ -66,20 +66,23 @@ const PropertyCard = ({ price, title, type, features = [], agent, image, tags })
           </div>
           <button
             onClick={() => scrollFeatures("right")}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white rounded-full p-2 shadow-md hover:bg-blue-600"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-black rounded-full p-2 shadow-md hover:bg-blue-600"
           >
             {">"}
           </button>
         </div>
 
-        {/* Agent Information */}
+          <div className="w-full p-3 bg-blue-50 mt-2 rounded-xl">
+            <h2>Freehold</h2>
+          </div>
+       
+        {/* Actions Section */}
+        <div className="mt-2 flex justify-between pb-3 mb-3">
         <p className="text-sm font-medium text-gray-700 mt-2">
           Agent: <span className="text-gray-900">{agent}</span>
         </p>
-
-        {/* Actions Section */}
-        <div className="mt-4 flex justify-end">
-          <button className="px-4 py-2 text-sm text-white bg-blue-500 rounded hover:bg-blue-600">
+          <button className="px-4 py-2 text-sm text-blue-500 bg-blue-50 rounded hover:bg-blue-100"
+       >
             View Number
           </button>
         </div>
