@@ -8,33 +8,14 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
+  
 } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon } from '@heroicons/react/20/solid'
+import {  MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
 import PropertyList from './PropertyList'
 
-const sortOptions = [
-  { name: 'Most Popular', href: '#', current: true },
-  { name: 'Best Rating', href: '#', current: false },
-  { name: 'Newest', href: '#', current: false },
-  { name: 'Price: Low to High', href: '#', current: false },
-  { name: 'Price: High to Low', href: '#', current: false },
-  { name: 'Oldest', href: '#', current: false }, // New option
-]
 
-const subCategories = [
-  { name: 'Totes', href: '#' },
-  { name: 'Backpacks', href: '#' },
-  { name: 'Travel Bags', href: '#' },
-  { name: 'Hip Bags', href: '#' },
-  { name: 'Laptop Sleeves', href: '#' },
-  { name: 'Duffel Bags', href: '#' },  // New subcategory
-  { name: 'Handbags', href: '#' },     // New subcategory
-]
+
 
 const filters = [
   {
@@ -123,13 +104,34 @@ const filters = [
 ]
 
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export default function Filter() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
+  const [selectedFilters, setSelectedFilters] = useState({})
 
+  // Function to handle checkbox change
+  const handleFilterChange = (sectionId, optionValue, isChecked) => {
+    setSelectedFilters((prev) => {
+      const updatedFilters = { ...prev }
+
+      if (isChecked) {
+        // Add the selected option to the section
+        if (!updatedFilters[sectionId]) {
+          updatedFilters[sectionId] = []
+        }
+        updatedFilters[sectionId].push(optionValue)
+      } else {
+        // Remove the option from the section
+        if (updatedFilters[sectionId]) {
+          updatedFilters[sectionId] = updatedFilters[sectionId].filter((val) => val !== optionValue)
+          if (updatedFilters[sectionId].length === 0) {
+            delete updatedFilters[sectionId]
+          }
+        }
+      }
+      return updatedFilters
+    })
+  }
   return (
     <div className="bg-40">
       <div>
@@ -226,7 +228,7 @@ export default function Filter() {
         </Dialog>
 
         <main className="mx-auto  px-4 sm:px-6 lg:px-8">
-         
+
 
           <section aria-labelledby="products-heading" className="pb-24 pt-6">
             <h2 id="products-heading" className="sr-only">
@@ -330,59 +332,9 @@ export default function Filter() {
 
 
               {/* Product grid */}
-              <div className="lg:col-span-3  "> 
-              <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-0">
-            <h1 className="text-4xl font-bold tracking-tight text-gray-900"></h1>
-
-            <div className="flex items-center">
-              <Menu as="div" className="relative inline-block text-left">
-                <div>
-                  <MenuButton className="group inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900">
-                    Sort
-                    <ChevronDownIcon
-                      aria-hidden="true"
-                      className="-mr-1 ml-1 size-5 shrink-0 text-gray-400 group-hover:text-gray-500"
-                    />
-                  </MenuButton>
-                </div>
-
-                <MenuItems
-                  transition
-                  className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
-                >
-                  <div className="py-1">
-                    {sortOptions.map((option) => (
-                      <MenuItem key={option.name}>
-                        <a
-                          href={option.href}
-                          className={classNames(
-                            option.current ? 'font-medium text-gray-900' : 'text-gray-500',
-                            'block px-4 py-2 text-sm data-[focus]:bg-gray-100 data-[focus]:outline-none',
-                          )}
-                        >
-                          {option.name}
-                        </a>
-                      </MenuItem>
-                    ))}
-                  </div>
-                </MenuItems>
-              </Menu>
-
-              <button type="button" className="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
-                <span className="sr-only">View grid</span>
-                <Squares2X2Icon aria-hidden="true" className="size-5" />
-              </button>
-              <button
-                type="button"
-                onClick={() => setMobileFiltersOpen(true)}
-                className="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
-              >
-                <span className="sr-only">Filters</span>
-                <FunnelIcon aria-hidden="true" className="size-5" />
-              </button>
-            </div>
-          </div>
-                <PropertyList /> </div>
+              <div className="lg:col-span-3  ">
+               
+              <PropertyList filters={selectedFilters} /></div>
             </div>
           </section>
         </main>
