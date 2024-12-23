@@ -19,16 +19,15 @@ const sortOptions = [
 const PropertyList = ({ filters }) => {
   const [sortOption, setSortOption] = useState("Newest First");
 
-
   // Function to filter and sort properties based on the selected options and filters
   const filteredProperties = () => {
     let filtered = [...properties];
 
- 
-
-    if (filters.minPrice && filters.maxPrice) {
-      filtered = filtered.filter(property => {
-        const price = parseInt(property.price.replace(/[^\d]/g, ""), 10);
+    // Check if filters exist and are valid
+    if (filters && filters.minPrice && filters.maxPrice) {
+      filtered = filtered.filter((property) => {
+        // Safely access the price and convert it to a number
+        const price = property.price ? parseInt(property.price.replace(/[^\d]/g, ""), 10) : 0;
         return price >= filters.minPrice && price <= filters.maxPrice;
       });
     }
@@ -42,14 +41,14 @@ const PropertyList = ({ filters }) => {
 
     if (sortOption === "Price Low to High") {
       sorted = sorted.sort((a, b) => {
-        const priceA = parseInt(a.price.replace(/[^\d]/g, ""), 10);
-        const priceB = parseInt(b.price.replace(/[^\d]/g, ""), 10);
+        const priceA = a.price ? parseInt(a.price.replace(/[^\d]/g, ""), 10) : 0;
+        const priceB = b.price ? parseInt(b.price.replace(/[^\d]/g, ""), 10) : 0;
         return priceA - priceB;
       });
     } else if (sortOption === "Price High to Low") {
       sorted = sorted.sort((a, b) => {
-        const priceA = parseInt(a.price.replace(/[^\d]/g, ""), 10);
-        const priceB = parseInt(b.price.replace(/[^\d]/g, ""), 10);
+        const priceA = a.price ? parseInt(a.price.replace(/[^\d]/g, ""), 10) : 0;
+        const priceB = b.price ? parseInt(b.price.replace(/[^\d]/g, ""), 10) : 0;
         return priceB - priceA;
       });
     }
