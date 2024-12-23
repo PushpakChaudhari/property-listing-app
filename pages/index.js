@@ -20,7 +20,6 @@ export default function Home() {
         Home &gt; Property for Buy in Noida
       </header>
       <div className="flex">
-        
         <Filters />
         <PropertyList />
       </div>
