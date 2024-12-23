@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropertyCard from "./PropertyCard";
-import properties from "../data/properties";
-
+import properties from "../../data/properties";
 const PropertyList = () => {
   const [sortOption, setSortOption] = useState("Newest First");
 

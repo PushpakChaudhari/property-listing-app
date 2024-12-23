@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const PropertyCard = ({ price, title, type, features, agent, image, tags }) => {
+const PropertyCard = ({ price, title, type, features = [], agent, image, tags }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
 
   const scrollFeatures = (direction) => {
