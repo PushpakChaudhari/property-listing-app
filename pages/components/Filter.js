@@ -8,14 +8,10 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
-  
 } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import {  MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
+import { MinusIcon, PlusIcon } from '@heroicons/react/20/solid'
 import PropertyList from './PropertyList'
-
-
-
 
 const filters = [
   {
@@ -100,10 +96,7 @@ const filters = [
       { label: 'Builder', value: 'Builder' },
     ],
   },
-
 ]
-
-
 
 export default function Filter() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
@@ -132,6 +125,12 @@ export default function Filter() {
       return updatedFilters
     })
   }
+
+  // Clear filters without removing filter options
+  const clearFilters = () => {
+    setSelectedFilters({});
+  }
+
   return (
     <div className="bg-40">
       <div>
@@ -162,8 +161,6 @@ export default function Filter() {
               {/* Filters */}
               <form className="mt-4 border-t border-gray-200">
                 <h3 className="sr-only">Categories</h3>
-
-
                 {filters.map((section) => (
                   <Disclosure key={section.id} as="div" className="border-t border-gray-200 px-4 py-6">
                     <h3 className="-mx-2 -my-3 flow-root">
@@ -182,10 +179,11 @@ export default function Filter() {
                             <div className="flex h-5 shrink-0 items-center">
                               <div className="group grid size-4 grid-cols-1">
                                 <input
-                                  defaultValue={option.value}
-                                  id={`filter-mobile-${section.id}-${optionIdx}`}
+                                  id={`filter-${section.id}-${optionIdx}`}
                                   name={`${section.id}[]`}
                                   type="checkbox"
+                                  checked={selectedFilters[section.id]?.includes(option.value) || false}
+                                  onChange={(e) => handleFilterChange(section.id, option.value, e.target.checked)}
                                   className="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
                                 />
                                 <svg
@@ -210,10 +208,7 @@ export default function Filter() {
                                 </svg>
                               </div>
                             </div>
-                            <label
-                              htmlFor={`filter-mobile-${section.id}-${optionIdx}`}
-                              className="min-w-0 flex-1 text-gray-500"
-                            >
+                            <label htmlFor={`filter-${section.id}-${optionIdx}`} className="text-sm text-gray-600">
                               {option.label}
                             </label>
                           </div>
@@ -227,32 +222,22 @@ export default function Filter() {
           </div>
         </Dialog>
 
-        <main className="mx-auto  px-4 sm:px-6 lg:px-8">
-
-
+        <main className="mx-auto px-4 sm:px-6 lg:px-8">
           <section aria-labelledby="products-heading" className="pb-24 pt-6">
-            <h2 id="products-heading" className="sr-only">
-              Products
-            </h2>
+            <h2 id="products-heading" className="sr-only">Products</h2>
 
-            <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4  ">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
               {/* Filters */}
               <form className="hidden lg:block w-full p-6 bg-white border-r border-gray-300 shadow-xl rounded-lg max-h-fit">
                 <div className="flex items-center justify-between ">
                   <h1>Filters</h1>
                   <button
                     type="button"
-                    onClick={() => {
-                      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-                      checkboxes.forEach((checkbox) => {
-                        checkbox.checked = false;
-                      });
-                    }}
+                    onClick={clearFilters} // Call the clearFilters function here
                     className="text-sm text-gray-500 hover:text-gray-700 focus:outline-none"
                   >
                     Clear
                   </button>
-
                 </div>
 
                 <h3 className="sr-only">Categories</h3>
@@ -263,7 +248,6 @@ export default function Filter() {
                       <DisclosureButton className="group flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
                         <span className="font-medium text-gray-900">{section.name}</span>
                         <span className="ml-6 flex items-center">
-                          {/* Downward arrow when closed */}
                           <svg
                             className="w-4 h-4 transform group-open:rotate-180 transition-transform"
                             xmlns="http://www.w3.org/2000/svg"
@@ -289,11 +273,11 @@ export default function Filter() {
                             <div className="flex h-5 shrink-0 items-center">
                               <div className="group grid size-4 grid-cols-1">
                                 <input
-                                  defaultValue={option.value}
-                                  defaultChecked={option.checked}
                                   id={`filter-${section.id}-${optionIdx}`}
                                   name={`${section.id}[]`}
                                   type="checkbox"
+                                  checked={selectedFilters[section.id]?.includes(option.value) || false}
+                                  onChange={(e) => handleFilterChange(section.id, option.value, e.target.checked)}
                                   className="col-start-1 row-start-1 appearance-none rounded border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
                                 />
                                 <svg
@@ -329,12 +313,10 @@ export default function Filter() {
                 ))}
               </form>
 
-
-
-              {/* Product grid */}
-              <div className="lg:col-span-3  ">
-               
-              <PropertyList filters={selectedFilters} /></div>
+              {/* Property List */}
+              <div className="lg:col-span-3">
+                <PropertyList filters={selectedFilters} />
+              </div>
             </div>
           </section>
         </main>
@@ -342,3 +324,4 @@ export default function Filter() {
     </div>
   )
 }
+

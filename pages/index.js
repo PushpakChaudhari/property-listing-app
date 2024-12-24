@@ -25,8 +25,9 @@ export default function Home() {
         Home &gt; Property for Buy in Noida
       </header>
     
-  
-  <Filter/>
+{/*   
+  <Filter/> */}
+  <Filters/>
      
   </div>
     </>

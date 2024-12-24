@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import PropertyCard from "./PropertyCard";
 import properties from "../../data/properties";
-
-import { ChevronDownIcon, FunnelIcon, Squares2X2Icon } from "@heroicons/react/20/solid";
+import {
+  ChevronDownIcon,
+  FunnelIcon,
+  Squares2X2Icon,
+} from "@heroicons/react/20/solid";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 
 const classNames = (...classes) => classes.filter(Boolean).join(" ");
@@ -19,17 +22,33 @@ const sortOptions = [
 const PropertyList = ({ filters }) => {
   const [sortOption, setSortOption] = useState("Newest First");
 
-  // Function to filter and sort properties based on the selected options and filters
+  const parsePrice = (price) => {
+    return price ? parseInt(price.replace(/[^\d]/g, ""), 10) : 0;
+  };
+
+  // Function to filter properties based on selected filters
   const filteredProperties = () => {
     let filtered = [...properties];
 
-    // Check if filters exist and are valid
-    if (filters && filters.minPrice && filters.maxPrice) {
+    // Filter by price range
+    if (filters?.minPrice && filters?.maxPrice) {
       filtered = filtered.filter((property) => {
-        // Safely access the price and convert it to a number
-        const price = property.price ? parseInt(property.price.replace(/[^\d]/g, ""), 10) : 0;
+        const price = parsePrice(property.price);
         return price >= filters.minPrice && price <= filters.maxPrice;
       });
+    }
+
+    // Add additional filter logic if needed (e.g., by bedrooms, location, etc.)
+    if (filters?.bedrooms) {
+      filtered = filtered.filter(
+        (property) => property.bedrooms === filters.bedrooms
+      );
+    }
+
+    if (filters?.location) {
+      filtered = filtered.filter(
+        (property) => property.location === filters.location
+      );
     }
 
     return filtered;
@@ -39,20 +58,24 @@ const PropertyList = ({ filters }) => {
   const sortedProperties = () => {
     let sorted = filteredProperties();
 
-    if (sortOption === "Price Low to High") {
-      sorted = sorted.sort((a, b) => {
-        const priceA = a.price ? parseInt(a.price.replace(/[^\d]/g, ""), 10) : 0;
-        const priceB = b.price ? parseInt(b.price.replace(/[^\d]/g, ""), 10) : 0;
-        return priceA - priceB;
-      });
-    } else if (sortOption === "Price High to Low") {
-      sorted = sorted.sort((a, b) => {
-        const priceA = a.price ? parseInt(a.price.replace(/[^\d]/g, ""), 10) : 0;
-        const priceB = b.price ? parseInt(b.price.replace(/[^\d]/g, ""), 10) : 0;
-        return priceB - priceA;
-      });
+    switch (sortOption) {
+      case "Price Low to High":
+        sorted = sorted.sort((a, b) => parsePrice(a.price) - parsePrice(b.price));
+        break;
+      case "Price High to Low":
+        sorted = sorted.sort((a, b) => parsePrice(b.price) - parsePrice(a.price));
+        break;
+      case "Newest First":
+        sorted = sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
+        break;
+      case "Oldest":
+        sorted = sorted.sort((a, b) => new Date(a.date) - new Date(b.date));
+        break;
+      // Add more sorting logic here if necessary
+      default:
+        break;
     }
-    // Add more sorting logic here for other options (e.g., Most Popular, Best Rating, etc.)
+
     return sorted;
   };
 
@@ -73,9 +96,7 @@ const PropertyList = ({ filters }) => {
                 />
               </MenuButton>
             </div>
-            <MenuItems
-              className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 focus:outline-none"
-            >
+            <MenuItems className="absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 focus:outline-none">
               <div className="py-1">
                 {sortOptions.map((option) => (
                   <MenuItem key={option.value}>

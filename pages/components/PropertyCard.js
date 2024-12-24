@@ -1,15 +1,21 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 const PropertyCard = ({ price, title, type, features = [], agent, image, tags }) => {
   const carouselRef = useRef(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    // Set a flag to ensure client-only logic runs
+    setIsClient(true);
+  }, []);
 
   const scrollFeatures = (direction) => {
-    const container = carouselRef.current;
-    const scrollAmount = 150; // Adjust for smoother scrolling
-    if (direction === "left") {
-      container.scrollBy({ left: -scrollAmount, behavior: "smooth" });
-    } else {
-      container.scrollBy({ left: scrollAmount, behavior: "smooth" });
+    if (isClient && carouselRef.current) {
+      const scrollAmount = 150;
+      carouselRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
     }
   };
 
@@ -36,40 +42,42 @@ const PropertyCard = ({ price, title, type, features = [], agent, image, tags })
         <p className="text-sm text-gray-600">{title}</p>
 
         {/* Features Carousel */}
-        <div className="mt-4 relative">
-          <button
-            onClick={() => scrollFeatures("left")}
-            className="absolute left-2 top-1/2 transform -translate-y-1/2 text-black rounded-full p-2 shadow-md hover:bg-blue-600"
-          >
-            {"<"}
-          </button>
-          <div
-            ref={carouselRef}
-            className="flex overflow-hidden space-x-4 mx-10"
-            style={{
-              scrollBehavior: "smooth",
-              whiteSpace: "nowrap",
-              overflowX: "hidden",
-            }}
-          >
-            <ul className="flex items-center space-x-4">
-              {features.map((feature, index) => (
-                <li
-                  key={index}
-                  className="flex-shrink-0 bg-blue-50 border px-4 py-2 rounded-lg shadow-sm text-center min-w-[120px]"
-                >
-                  {feature}
-                </li>
-              ))}
-            </ul>
+        {isClient && (
+          <div className="mt-4 relative">
+            <button
+              onClick={() => scrollFeatures("left")}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 text-black rounded-full p-2 shadow-md hover:bg-blue-600"
+            >
+              {"<"}
+            </button>
+            <div
+              ref={carouselRef}
+              className="flex overflow-hidden space-x-4 mx-10"
+              style={{
+                scrollBehavior: "smooth",
+                whiteSpace: "nowrap",
+                overflowX: "hidden",
+              }}
+            >
+              <ul className="flex items-center space-x-4">
+                {features.map((feature, index) => (
+                  <li
+                    key={index}
+                    className="flex-shrink-0 bg-blue-50 border px-4 py-2 rounded-lg shadow-sm text-center min-w-[120px]"
+                  >
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <button
+              onClick={() => scrollFeatures("right")}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-black rounded-full p-2 shadow-md hover:bg-blue-600"
+            >
+              {">"}
+            </button>
           </div>
-          <button
-            onClick={() => scrollFeatures("right")}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent text-black rounded-full p-2 shadow-md hover:bg-blue-600"
-          >
-            {">"}
-          </button>
-        </div>
+        )}
 
         <div className="w-full p-3 bg-blue-50 mt-2 rounded-xl">
           <h2>Freehold</h2>
